@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Tabs from '@/components/Tabs'
+import addUser from '@/components/addUser'
+import userList from '@/components/userList'
 // import NavMenu from '@/components/NavMenu'
 
 Vue.use(Router)
@@ -8,9 +9,14 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path:'/',
-      name:'Tabs',
-      component:Tabs
+      path:'/user/addUser',
+      name:'addUser',
+      component:addUser
+    },
+    {
+      path:'/user/userList',
+      name:'userList',
+      component:userList
     }
   ]
 })
