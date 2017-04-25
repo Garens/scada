@@ -1,42 +1,52 @@
 <template>
   <div>
-    <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
+    <el-tabs theme="dark" v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
       <el-tab-pane
       v-for="(item, index) in editableTabs"
       :label="item.title"
       :name="item.name"
       >
-        {{item.content}}
+        <el-btn v-on:btn-click="btnClick"></el-btn>
       </el-tab-pane>
-    </el-tabs>    
+    </el-tabs>
   </div>
 </template>
 
 <script>
+import ElBtn from './Button.vue'
+
   export default {
     data() {
       return {
         editableTabsValue: '2',
         editableTabs: [{
           title: 'Tab 1',
-          name: '1',
-          content: 'Tab 1 content'
+          name: '1'
         }, {
           title: 'Tab 2',
           name: '2',
-          content: 'Tab 2 content'
+          content: '<el-btn></el-btn>'
         }],
         tabIndex: 2
       }
     },
+    components: {
+      ElBtn
+    },
+    events:{
+    },
     methods: {
+      btnClick(){
+        console.log(44);
+        this.$emit('btn-click',true);
+      },
       handleTabsEdit(targetName, action) {
         if (action === 'add') {
           let newTabName = ++this.tabIndex + '';
           this.editableTabs.push({
             title: 'New Tab',
             name: newTabName,
-            content: 'New Tab content'
+            content: 'New Tab content '+ newTabName
           });
           this.editableTabsValue = newTabName;
         }

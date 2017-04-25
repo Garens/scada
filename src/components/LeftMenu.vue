@@ -1,7 +1,7 @@
 <template>
   <el-row class="tac">
     <el-col :span="24">
-      <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+      <el-menu v-bind:default-openeds="activeIndex" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
         <el-submenu index="1">
           <template slot="title"><i class="el-icon-message"></i>导航一</template>
           <el-menu-item-group>
@@ -25,6 +25,11 @@
 </template>
 <script>
 export default {
+  data () {
+    return {
+      activeIndex:['1','1-4']
+    }
+  },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
