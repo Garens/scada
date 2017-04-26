@@ -9,13 +9,17 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path:'/user/addUser',
+      path:'/manage/user/addUser',
       name:'addUser',
       component:addUser
     },
     {
-      path:'/user/userList',
+      path:'/manage/user/userList',
       name:'userList',
+      component:userList
+    },
+    {
+      path: '/manage/user/',
       component:userList
     }
   ]
