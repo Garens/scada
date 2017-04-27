@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import addUser from '@/components/addUser'
 import userList from '@/components/userList'
+import fabric from '@/components/fabric'
 // import NavMenu from '@/components/NavMenu'
 
 Vue.use(Router)
@@ -21,6 +22,10 @@ export default new Router({
     {
       path: '/manage/user/',
       component:userList
+    },
+    {
+      path: '/fabric',
+      component:fabric
     }
   ]
 })

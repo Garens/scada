@@ -21,7 +21,7 @@
           <bread-crumb></bread-crumb>
           <!-- 内容页 -->
           <el-col :span="24" class="wraps">
-            <el-button type="success" @click="showDiag">打开</el-button>
+            <!-- <el-button type="success" @click="showDiag">打开</el-button> -->
             <!-- 路由显示 -->
             <router-view></router-view>
           </el-col>
