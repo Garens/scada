@@ -1,18 +1,8 @@
 <template>
   <div>
-    <el-button type="info"  @click="loadCanvasData">加载数据</el-button>
-    <template v-for="(item,index) in tunnelList">
-      <el-button type="success"  @click="showDoc(item.Id)">{{item.Name}}</el-button>
-    </template>
-    <el-tabs v-model="editableTabsValue" type="card" @edit="handleTabsEdit">
-      <el-tab-pane
-      v-for="(item, index) in editableTabs"
-      :label="item.title"
-      :name="item.name"
-      v-html="item.content"
-      >
-      </el-tab-pane>
-    </el-tabs>
+    <div class="pixi" id="fabric">
+
+    </div>
   </div>
 </template>
 
@@ -27,7 +17,6 @@ import axios from 'axios'
         editableTabsValue: '2',
         editableTabs: [],
         tabIndex: 2,
-        tunnelList: [],
         docIdList:[],
         docList:[]
       }
@@ -38,82 +27,63 @@ import axios from 'axios'
     events:{
     },
     created () {
-      this.getTunnelList();
+
+    },
+    mounted: function () {
+      this.$nextTick(function () {
+        this.initScada();
+        this.getObjects();
+        this.initFabric();
+      });
     },
     methods: {
-      loadCanvasData () {
-        this.docList.forEach(item => {
-          let canvas = new fabric.Canvas(item.id,{backgroundColor:'#1099bb'});
-          canvas.loadFromJSON(item.canvas, function(){
-            canvas.renderAll();
-          });
-        })
-
+      initScada: function() {
+        // var scada =
+        this.scada = new Scada();
       },
-      showDoc (id) {
-        axios.get('/server/getDocData?id='+id).then(res => {
-          // console.log(res);
-          if(res.data.flag) {
-            this.editableTabs = [];
-            this.docIdList = [];
-            this.docList = [];
-            res.data.data.forEach(item => {
-              let newTabName = ++this.tabIndex + '';
-              this.editableTabs.push({
-                title: item.name,
-                name: newTabName,
-                content: '<canvas id="'+item.id+'" width="'+item.size.width+'" height="'+item.size.height+'"></canvas>'
-              });
-              this.editableTabsValue = newTabName;
-              this.docIdList.push(item.id);
-              this.docList.push(item);
-              // new fabric.Canvas(item.id,{backgroundColor:'#1099bb'});
-              // this.loadCanvasData(item);
-            })
-
-          }
-        })
+      initFabric:function(){
+        var canvas = document.createElement("canvas");
+        canvas.id = 'canvas';
+        canvas.width = 1200;
+        canvas.height = 900;
+        document.getElementById('fabric').appendChild(canvas);
+        this.canvas = new fabric.Canvas('canvas',{backgroundColor:'#1099bb'});
       },
-      getTunnelList () {
-        axios.get('/server/getTunnelList').then(res => {
+      getObjects: function() {
+        var _this = this;
+        axios.get('/server/getDeviceList').then(function(res){
           console.log(res);
-          if(res.data.flag) {
-            this.tunnelList = res.data.data;
+          var objs = res.data;
+          console.log(objs);
+          _this.scada.init(objs);
+          _this.objects = [];
+          var type = ['path','group','path-group','rect','path1'];
+          for(var i in objs) {
+            if(!type.includes(objs[i].type)) {
+              continue;
+            }
+            _this.objects.push(objs[i].data);
           }
-          console.log(this.tunnelList);
+          _this.test1();
         })
       },
-      btnClick(){
-        console.log(44);
-        this.$emit('btn-click',true);
+      test1: function() {
+        var _this = this;
+        this.startTimer();
+        var json = {objects:this.objects,backgroundColor:'#1099bb'}
+        this.canvas.loadFromJSON(json, function(){
+          _this.canvas.renderAll();
+          _this.stopTimer();
+        });
       },
-      handleTabsEdit(targetName, action) {
-        if (action === 'add') {
-          let newTabName = ++this.tabIndex + '';
-          this.editableTabs.push({
-            title: 'New Tab',
-            name: newTabName,
-            content: 'New Tab content '+ newTabName
-          });
-          this.editableTabsValue = newTabName;
-        }
-        if (action === 'remove') {
-          let tabs = this.editableTabs;
-          let activeName = this.editableTabsValue;
-          if (activeName === targetName) {
-            tabs.forEach((tab, index) => {
-              if (tab.name === targetName) {
-                let nextTab = tabs[index + 1] || tabs[index - 1];
-                if (nextTab) {
-                  activeName = nextTab.name;
-                }
-              }
-            });
-          }
-
-          this.editableTabsValue = activeName;
-          this.editableTabs = tabs.filter(tab => tab.name !== targetName);
-        }
+      startTimer () {
+        this.t1 = new Date().getTime();
+        return this.t1;
+      },
+      stopTimer () {
+        this.t2 = new Date().getTime();
+        this.t = this.t2 - this.t1;
+        return this.t;
       }
     }
   }

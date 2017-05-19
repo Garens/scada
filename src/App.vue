@@ -27,9 +27,11 @@
           </el-col>
         </div></el-col>
 
-        <el-col :span="4"><div class="grid-content bg-purple" id="rightList">
-          <right-list></right-list>
-        </div></el-col>
+        <el-col :span="4">
+          <div class="grid-content bg-purple" id="rightList">
+          <!-- <right-list></right-list> -->
+          </div>
+        </el-col>
       </el-row>
       <el-row>
         <el-col :span="24"><div theme="dark" class="grid-content bg-purple-dark">
