@@ -81,9 +81,9 @@ import axios from 'axios'
        * @return {[type]}     [description]
        */
       renderPath:function(obj){
-
+        this.testdrawfun();
         var graphics = new PIXI.Graphics();
-        console.log(graphics);
+        // console.log(graphics);
         // this.container.setTransform(-100,-10);
         this.container.addChild(graphics);
         SVGGraphics.drawSVG(graphics, obj,this.container);
@@ -91,6 +91,30 @@ import axios from 'axios'
         this.app.render(this.container);
         this.stopTimer();
         // document.getElementById('timeLine').innerHtml(this.stopTimer);
+      },
+      testdrawfun: function() {
+        var graphics = new PIXI.Graphics();
+        this.container.addChild(graphics);
+        graphics.lineStyle(2, 0xffd900, 1);
+        graphics.beginFill(0xFF3300);
+        graphics.moveTo(100,0);
+        graphics.bezierCurveTo(50, 0, 0, 50, 0, 100);
+        graphics.bezierCurveTo(0, 150, 50, 200, 100, 200);
+        graphics.bezierCurveTo(150, 200, 200, 150, 200, 100);
+        graphics.bezierCurveTo(200, 50, 150, 0, 100, 0);
+        // graphics.moveTo(100, 0);
+        graphics.closePath();
+        graphics.lineTo(100, 150);
+        // graphics.lineStyle(1, 0xddff33, 1);
+        // graphics.beginFill(0x44ee33);
+        graphics.moveTo(100, 150);
+        graphics.bezierCurveTo(75, 150, 50, 125, 50, 100);
+        graphics.bezierCurveTo(50, 75, 75, 50, 100, 50);
+        graphics.bezierCurveTo(125, 50, 150, 75, 150, 100);
+        graphics.bezierCurveTo(150, 125, 125, 150, 100, 150);
+        graphics.closePath();
+        // graphics.endFill();
+        this.app.render(this.container);
       },
       setAttribute: function(graphics,obj) {
         graphics.x = obj.left;
@@ -103,16 +127,17 @@ import axios from 'axios'
       switchRender: function() {
         var _this = this;
         this.startTimer();
-        this.scada.on('path',function(obj) {
-            _this.renderPath(obj);
-        });
+        // this.scada.on('path',function(obj) {
+        //     _this.renderPath(obj);
+        // });
         // this.scada.on('path1',function(obj) {
         //     _this.renderPath1(obj);
         // });
-        this.scada.on('group',function(obj) {
-            _this.renderGroup(obj);
-        });
+        // this.scada.on('group',function(obj) {
+        //     _this.renderGroup(obj);
+        // });
         this.scada.on('path-group',function(obj) {
+          console.log(obj);
             _this.renderPath(obj);
         });
         // this.scada.on('rect',function(obj) {

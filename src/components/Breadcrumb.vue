@@ -59,7 +59,6 @@
         };
 
         findPath(column);
-        console.log(paths);
         this.paths = paths;
       },
       showDiag(){

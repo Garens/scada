@@ -6,6 +6,8 @@ import scada from '@/components/scada'
 import fabric from '@/components/fabric'
 import pixi from '@/components/pixi'
 import pixiAni from '@/components/pixiAni'
+import demo1 from '@/components/demo1'
+import canvas from '@/components/canvas'
 // import NavMenu from '@/components/NavMenu'
 
 Vue.use(Router)
@@ -41,6 +43,14 @@ export default new Router({
     {
       path: '/pixiAni',
       component:pixiAni
+    },
+    {
+      path: '/demo1',
+      component:demo1
+    },
+    {
+      path: '/canvas',
+      component:canvas
     }
   ]
 })

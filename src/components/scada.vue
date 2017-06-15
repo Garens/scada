@@ -81,6 +81,7 @@ import axios from 'axios'
           //   animate();
           // })(canvas);
         })
+        console.log(this.docList);
 
       },
       showDoc (id) {

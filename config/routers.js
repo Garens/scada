@@ -14,6 +14,8 @@ export default {
     {name: 'scada',path: '/scada', title: '隧道监控', icon:'el-icon-time'},
     {name: 'pixi',path: '/pixi', title: 'pixi渲染', icon:'el-icon-document'},
     {name: 'fabric',path: '/fabric', title: 'fabric渲染', icon:'el-icon-document'},
-    {name: 'pixiAni',path: '/pixiAni', title: 'pixi动画', icon:'el-icon-loading'}
+    {name: 'pixiAni',path: '/pixiAni', title: 'pixi动画', icon:'el-icon-loading'},
+    {name: 'demo1',path: '/demo1', title: 'demo1', icon:'el-icon-time'},
+    {name: 'canvas',path: '/canvas', title: 'canvas', icon:'el-icon-time'}
   ]
 }

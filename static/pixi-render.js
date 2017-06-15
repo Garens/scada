@@ -157,13 +157,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {SVGCircleElement} node
 	 */
 	SVGGraphics.prototype.drawCircleNode = function (node) {
-	  this.applySvgAttributes(node)
-
-	  var cx = node.left+(node.width/2)
-	  var cy = node.top+(node.height/2)
-	  var r = node.radius
-
-	  this._graphics.drawCircle(cx, cy, r)
+	  // this.applySvgAttributes(node)
+		//
+	  // var cx = node.left+(node.width/2)
+	  // var cy = node.top+(node.height/2)
+	  // var r = node.radius
+		//
+	  // this._graphics.drawCircle(cx, cy, r)
 	}
 
 	/**
@@ -207,11 +207,194 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this._graphics.drawPolygon(path)
 	}
 
+		SVGGraphics.prototype.drawPathNode = function (node) {
+			// this.applySvgAttributes(node);
+			var paths = node.path;
+			var x = 0;
+			var y = 0;
+			var offsetX = 0;//-node.pathOffset.x;
+			var offsetY = 0;//-node.pathOffset.y;
+			var subX = 0;
+			var subY = 0;
+			var tempX = 0;
+			var tempY = 0;
+			var controlX = 0;
+			var controlY = 0;
+			var previous = null;
+			var pathIndex = 0;
+			if(paths.length !== 12) {
+				return;
+			}
+			var _paths = [];
+			_paths.push(["M", 18, 2.3]);
+			_paths.push(["c", -8.8, 0, -16, 7.2, -16, 16]);
+			_paths.push(["s", 7.2, 16, 16, 16]);
+			_paths.push(["c", 8.8, 0, 16, -7.2, 16, -16]);
+			_paths.push(["S", 26.8, 2.3, 18, 2.3]);
+			_paths.push(["z"]);
+			_paths.push(["M", 18, 32.8]);
+			_paths.push(["c", -8, 0, -14.5, -6.5, -14.5, -14.5]);
+			_paths.push(["S", 10, 3.8, 18, 3.8]);
+			_paths.push(["c", 8, 0, 14.5, 6.5, 14.5, 14.5]);
+			_paths.push(["S", 26, 32.8, 18, 32.8]);
+			_paths.push(["z"]);
+
+			console.log(_paths);
+			this._graphics.lineStyle(.1, 0xffd900, 1);
+			this._graphics.beginFill(0xFF3300);
+			for(var i = 0; i<_paths.length; i++) {
+				var path = _paths[i];
+				console.log(path);
+				var pathType = path[0];
+				switch (pathType) {
+					case 'M':
+						x = path[1];
+						y = path[2];
+						subX = x;
+						subY = y;
+						if(pathIndex == 0) {
+							this._graphics.moveTo(x + offsetX, y + offsetY);
+						} else {
+							this._graphics.lineTo(x + offsetX, y + offsetY);
+						}
+						pathIndex ++;
+						break;
+					case 'm':
+						x += path[1];
+						y += path[2];
+						subX = x;
+						subY = y;
+						if(pathIndex == 0) {
+							this._graphics.moveTo(x + offsetX, y + offsetY);
+						} else {
+							this._graphics.lineTo(x + offsetX, y + offsetY);
+						}
+						pathIndex ++;
+						break;
+					case 'L':
+						x = path[1];
+						y = path[2];
+						this._graphics.lineTo(x + offsetX, y + offsetY);
+						break;
+					case 'l':
+						x += path[1];
+						y += path[2];
+						this._graphics.lineTo(x + offsetX, y + offsetY);
+						break;
+					case 'V':
+						y = path[1];
+						this._graphics.lineTo(x + offsetX, y + offsetY);
+						break;
+					case 'v':
+						y += path[1];
+						this._graphics.lineTo(x + offsetX, y + offsetY);
+						break;
+					case 'H':
+						x = path[1];
+						this._graphics.lineTo(x + offsetX, y + offsetY);
+						break;
+					case 'h':
+						x += path[1];
+						this._graphics.lineTo(x + offsetX, y + offsetY);
+						break;
+					case 'C':
+						tempX = path[5];
+						tempY = path[6];
+						controlX = path[3];
+						controlY = path[4];
+						this._graphics.bezierCurveTo(
+							path[1] + offsetX, // x1
+              path[2] + offsetY, // y1
+              controlX + offsetX, // x2
+              controlY + offsetY, // y2
+              tempX + offsetX,
+              tempY + offsetY
+						);
+						x = tempX;
+						y = tempY;
+						break;
+					case 'c':
+						tempX = x + path[5];
+						tempY = y + path[6];
+						controlX = x + path[3];
+						controlY = y + path[4];
+						this._graphics.bezierCurveTo(
+							x + path[1] + offsetX, // x1
+							y + path[2] + offsetY, // y1
+							controlX + offsetX, // x2
+							controlY + offsetY, // y2
+							tempX + offsetX,
+							tempY + offsetY
+						);
+						x = tempX;
+						y = tempY;
+						break;
+					case 'S':
+						tempX = path[3];
+						tempY = path[4];
+						if (previous[0].match(/[CcSs]/) === null) {
+							controlX = x;
+              controlY = y;
+						} else {
+							controlX = 2 * x - controlX;
+              controlY = 2 * y - controlY;
+						}
+						this._graphics.bezierCurveTo(
+							controlX + offsetX, // x1
+							controlY + offsetY, // y1
+							path[1] + offsetX, // x2
+							path[2] + offsetY, // y2
+							tempX + offsetX,
+							tempY + offsetY
+						);
+						x = tempX;
+						y = tempY;
+						break;
+					case 's':
+						tempX = x + path[3];
+						tempY = y + path[4];
+						if (previous[0].match(/[CcSs]/) === null) {
+							controlX = x;
+              controlY = y;
+						} else {
+							controlX = 2 * x - controlX;
+              controlY = 2 * y - controlY;
+						}
+						this._graphics.bezierCurveTo(
+							controlX + offsetX, // x1
+							controlY + offsetY, // y1
+							x + path[1] + offsetX, // x2
+							y + path[2] + offsetY, // y2
+							tempX + offsetX,
+							tempY + offsetY
+						);
+						controlX = x + path[1];
+            controlY = y + path[2];
+						x = tempX;
+						y = tempY;
+						break;
+					case 'Z':
+						x = subX;
+						y = subY;
+						this._graphics.closePath();
+						break;
+					case 'z':
+						this._graphics.closePath();
+						break;
+					default:
+
+				}
+				previous = path;
+				// this._graphics.endFill();
+			}
+
+		}
+
 	/**
 	 * Draws the given path svg node
 	 * @param  {SVGPathElement} node
 	 */
-	SVGGraphics.prototype.drawPathNode = function (node) {
+	SVGGraphics.prototype.drawPathNode2 = function (node) {
 	  this.applySvgAttributes(node)
     var commands = node.path
 	  // var d = node.getAttribute('d').trim()
@@ -223,6 +406,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var j, argslen
 	  var lastPathCoord
 		// console.log(commands);
+		if(commands.length !== 12) {
+			return;
+		}
 	  for (var i = 0, len = commands.length; i < len; i++) {
 	    command = commands[i]
 	    var commandType = command[0]
@@ -236,6 +422,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Relative positions
 	      offset = lastCoord
 	    }
+
+				// console.log(commandType)
 
 	    switch (commandType.toLowerCase()) {
 	      // moveto command
@@ -337,6 +525,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        break
 	      // closepath command
 	      case 'z':
+					console.log(lastCoord);
+					console.log(firstCoord);
+					// lastCoord = firstCoord;
+					// this._graphics.closePath();
 	        // Z command is handled by M
 	        break
 	      default:
@@ -351,7 +543,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 
-	SVGGraphics.prototype.drawPathNode11 = function (node) {
+	SVGGraphics.prototype.drawPathNode1 = function (node) {
 		this.applySvgAttributes(node)
 		var ctx = this._graphics;
       var current, // current instruction
@@ -364,15 +556,14 @@ return /******/ (function(modules) { // webpackBootstrap
           controlY = 0, // current control point y
           tempX,
           tempY,
-          l = -node.pathOffset.x,
-          t = -node.pathOffset.y;
+          l = 0;//-node.pathOffset.x,
+          t = 0;//-node.pathOffset.y;
 
       if (node.type === 'path-group') {
 				console.log(11);
         l = 0;
         t = 0;
       }
-			console.log(1);
 
       // this._graphics.beginPath();
 
